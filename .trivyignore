@@ -1,0 +1,5 @@
+# KSV014: readOnlyRootFilesystem cannot be enabled for the LSIO Home Assistant image.
+# The s6-overlay init system writes to the root filesystem during container startup
+# (service definitions, runtime state). Setting readOnlyRootFilesystem: true breaks the init.
+# Mitigated by: seccompProfile RuntimeDefault, PUID 1000 (HA process non-root), capabilities drop ALL.
+KSV014
