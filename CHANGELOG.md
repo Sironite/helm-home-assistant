@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.0...home-assistant-v1.1.1) (2026-06-22)
+
+
+### Bug Fixes
+
+* **ci:** add workflow_dispatch to trigger initial chart publish ([0146488](https://github.com/Sironite/helm-home-assistant/commit/0146488c3d383336dd7c0a912fd4ff927503e4fa))
+* **ci:** match release-please helm tag format (home-assistant-v*) ([6976f61](https://github.com/Sironite/helm-home-assistant/commit/6976f619ae423d48b33401985125a1d477811fc6))
+
 ## [1.1.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.0.0...home-assistant-v1.1.0) (2026-06-22)
 
 
