@@ -38,8 +38,7 @@ jobs:
       - name: Import GPG signing key
         run: |
           echo "${{ secrets.HELM_GPG_PRIVATE_KEY }}" | gpg --batch --import
-          GPG_KEY_ID=$(gpg --list-keys --with-colons low.bus0777@sironite.com | grep '^fpr' | head -1 | cut -d: -f10)
-          echo "GPG_KEY_ID=$GPG_KEY_ID" >> $GITHUB_ENV
+          gpg --export > /tmp/pubring.gpg
 
       - name: Regenerate README
         run: |
@@ -61,7 +60,7 @@ jobs:
           helm package . \
             --sign \
             --key "Sironite Helm Charts" \
-            --keyring ~/.gnupg/pubring.kbx
+            --keyring /tmp/pubring.gpg
 
       - name: Publish to GitHub Pages
         run: |
