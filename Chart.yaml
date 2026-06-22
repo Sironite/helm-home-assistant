@@ -18,7 +18,7 @@ maintainers:
   - name: sironite
     url: https://github.com/sironite
 annotations:
-  artifacthub.io/category: monitoring
+  artifacthub.io/category: integration-delivery
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: "false"
   artifacthub.io/links: |
