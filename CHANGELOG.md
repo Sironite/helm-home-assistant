@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.2...home-assistant-v1.1.3) (2026-06-22)
+
+
+### Bug Fixes
+
+* use valid ArtifactHub category slug (integration-delivery) ([86e76e9](https://github.com/Sironite/helm-home-assistant/commit/86e76e98302c599551cc6c289001fee662f147d2))
+
 ## [1.1.2](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.1...home-assistant-v1.1.2) (2026-06-22)
 
 
