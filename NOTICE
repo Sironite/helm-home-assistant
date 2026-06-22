@@ -1,0 +1,7 @@
+home-assistant Helm Chart
+Copyright 2025 Sironite
+
+This product packages Home Assistant for deployment on Kubernetes.
+Home Assistant is developed by the Home Assistant contributors and licensed
+under the Apache License 2.0.
+https://github.com/home-assistant/core
