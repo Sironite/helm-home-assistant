@@ -53,6 +53,7 @@ jobs:
           git worktree add /tmp/gh-pages origin/gh-pages
 
           cp "$CHART_TGZ" /tmp/gh-pages/
+          cp artifacthub-repo.yml /tmp/gh-pages/
           cd /tmp/gh-pages
           helm repo index . --url "$PAGES_URL" --merge index.yaml 2>/dev/null || helm repo index . --url "$PAGES_URL"
           git add .
