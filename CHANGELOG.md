@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.3...home-assistant-v1.1.4) (2026-06-22)
+
+
+### Bug Fixes
+
+* add ArtifactHub icon ([193949e](https://github.com/Sironite/helm-home-assistant/commit/193949ef41b1718f514b21fbe61a0b0320aba35c))
+
 ## [1.1.3](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.2...home-assistant-v1.1.3) (2026-06-22)
 
 
