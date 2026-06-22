@@ -2,7 +2,7 @@ name: Release Chart
 
 on:
   push:
-    tags: ["v*"]
+    tags: ["home-assistant-v*"]
 
 jobs:
   release:
