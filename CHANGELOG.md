@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.1...home-assistant-v1.1.2) (2026-06-22)
+
+
+### Bug Fixes
+
+* sync authentik proxy tag in values.yaml.example to 2026.5.3 ([167fe56](https://github.com/Sironite/helm-home-assistant/commit/167fe568cf731cd57da9f9404926912a4bd64e7f))
+
 ## [1.1.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.0...home-assistant-v1.1.1) (2026-06-22)
 
 
