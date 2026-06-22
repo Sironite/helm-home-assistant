@@ -14,3 +14,4 @@ tests/
 renovate.json
 artifacthub-repo.yml
 values.yaml.example
+pubkey.gpg
