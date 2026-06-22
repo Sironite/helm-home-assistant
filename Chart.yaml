@@ -1,8 +1,9 @@
 apiVersion: v2
 name: home-assistant
-description: Home Assistant on Kubernetes with optional code-server addon and Authentik outpost
+description: Home Assistant on Kubernetes with optional code-server addon and
+  Authentik outpost
 type: application
-version: 1.0.0
+version: 1.1.0
 appVersion: "2026.5.1"
 keywords:
   - home-assistant
