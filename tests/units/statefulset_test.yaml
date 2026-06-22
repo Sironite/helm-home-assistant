@@ -1,0 +1,80 @@
+suite: statefulset
+templates:
+  - templates/statefulset.yaml
+release:
+  name: home-assistant
+  namespace: home-assistant
+
+tests:
+  - it: renders StatefulSet with defaults
+    asserts:
+      - isKind:
+          of: StatefulSet
+      - equal:
+          path: metadata.name
+          value: home-assistant
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: home-assistant
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8123
+
+  - it: uses appVersion as image tag when tag is empty
+    set:
+      image.tag: ""
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "lscr.io/linuxserver/homeassistant:2026"
+
+  - it: uses explicit image tag when set
+    set:
+      image.tag: "2026.5.4"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: lscr.io/linuxserver/homeassistant:2026.5.4
+
+  - it: sets hostNetwork when enabled
+    set:
+      hostNetwork: true
+    asserts:
+      - equal:
+          path: spec.template.spec.hostNetwork
+          value: true
+
+  - it: does not set hostNetwork by default
+    asserts:
+      - notExists:
+          path: spec.template.spec.hostNetwork
+
+  - it: adds codeserver container when addon enabled
+    set:
+      addons.codeserver.enabled: true
+      addons.codeserver.image.tag: "4.118.0"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].name
+          value: codeserver
+      - equal:
+          path: spec.template.spec.containers[1].ports[0].containerPort
+          value: 8443
+
+  - it: uses custom storageClassName when set
+    set:
+      persistence.storageClassName: longhorn-fast
+    asserts:
+      - equal:
+          path: spec.volumeClaimTemplates[0].spec.storageClassName
+          value: longhorn-fast
+
+  - it: omits storageClassName when empty
+    set:
+      persistence.storageClassName: ""
+    asserts:
+      - notExists:
+          path: spec.volumeClaimTemplates[0].spec.storageClassName

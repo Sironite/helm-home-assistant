@@ -1,0 +1,176 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "home-assistant.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "home-assistant.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "home-assistant.fullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "home-assistant.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "home-assistant.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      {{- end }}
+
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+
+      {{- if and .Values.addons.codeserver.enabled .Values.externalSecrets.enabled }}
+      {{- $hasSSHSecret := false }}
+      {{- range .Values.externalSecrets.items }}
+      {{- if .coderOnly }}
+      {{- $hasSSHSecret = true }}
+      {{- end }}
+      {{- end }}
+      {{- if $hasSSHSecret }}
+      initContainers:
+      - name: fix-ssh-key-permissions
+        image: busybox:1.37
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /config/.ssh
+          cp /mnt/ssh-key/id_ed25519 /config/.ssh/id_ed25519
+          chown 1000:1000 /config/.ssh/id_ed25519
+          chmod 600 /config/.ssh/id_ed25519
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        {{- range .Values.externalSecrets.items }}
+        {{- if .coderOnly }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          subPath: {{ .secretKey }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
+
+      containers:
+      # Home Assistant — LSIO image; s6-overlay starts as root then drops to PUID.
+      # capabilities.drop ALL is incompatible with s6-overlay.
+      - name: home-assistant
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+        ports:
+        - name: http
+          containerPort: 8123
+          protocol: TCP
+        {{- if .Values.env }}
+        env:
+        {{- toYaml .Values.env | nindent 8 }}
+        {{- end }}
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        {{- if .Values.externalSecrets.enabled }}
+        {{- range .Values.externalSecrets.items }}
+        {{- if not .coderOnly }}
+        - name: {{ .name }}
+          mountPath: /config/{{ .secretKey }}
+          subPath: {{ .secretKey }}
+          readOnly: true
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.resources }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+      {{- if .Values.addons.codeserver.enabled }}
+      - name: codeserver
+        image: "{{ .Values.addons.codeserver.image.repository }}:{{ .Values.addons.codeserver.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+        {{- if .Values.addons.codeserver.env }}
+        env:
+        {{- toYaml .Values.addons.codeserver.env | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: codeserver
+          containerPort: 8443
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        {{- if .Values.externalSecrets.enabled }}
+        {{- range .Values.externalSecrets.items }}
+        - name: {{ .name }}
+          mountPath: {{ default (printf "/config/%s" .secretKey) .mountPath }}
+          subPath: {{ .secretKey }}
+          readOnly: true
+        {{- end }}
+        {{- end }}
+        {{- if .Values.sshKnownHosts.enabled }}
+        - name: ssh-known-hosts
+          mountPath: /config/.ssh/known_hosts
+          subPath: known_hosts
+          readOnly: true
+        {{- end }}
+        {{- if .Values.addons.codeserver.resources }}
+        resources:
+          {{- toYaml .Values.addons.codeserver.resources | nindent 10 }}
+        {{- end }}
+      {{- end }}
+
+      volumes:
+      {{- if .Values.externalSecrets.enabled }}
+      {{- range .Values.externalSecrets.items }}
+      - name: {{ .name }}
+        secret:
+          secretName: {{ .name }}
+          defaultMode: {{ default 0440 .defaultMode }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.sshKnownHosts.enabled }}
+      - name: ssh-known-hosts
+        configMap:
+          name: {{ include "home-assistant.fullname" . }}-ssh-known-hosts
+      {{- end }}
+
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      {{- if .Values.persistence.storageClassName }}
+      storageClassName: {{ .Values.persistence.storageClassName }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size | default "10Gi" }}

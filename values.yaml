@@ -1,0 +1,205 @@
+# -- Home Assistant container image.
+image:
+  # -- Image repository.
+  repository: lscr.io/linuxserver/homeassistant
+  # -- Image tag. Defaults to `Chart.appVersion` when empty.
+  tag: ""
+  # -- Image pull policy.
+  pullPolicy: IfNotPresent
+
+# -- Override the chart name used in resource names and labels.
+nameOverride: ""
+# -- Override the full resource name prefix.
+fullnameOverride: ""
+
+# -- Environment variables injected into the Home Assistant container.
+# The LSIO image requires `PUID`/`PGID` — the HA process runs as UID 1000, not root.
+env:
+- name: TZ
+  value: UTC
+- name: PUID
+  value: "1000"
+- name: PGID
+  value: "1000"
+
+# -- Kubernetes Service configuration.
+service:
+  # -- Service type. Use `LoadBalancer` to expose HA directly on the LAN.
+  type: ClusterIP
+  # -- Port to expose.
+  port: 8123
+  # -- Annotations merged onto the Service resource.
+  annotations: {}
+  # -- LoadBalancer IP to request (only used when `type: LoadBalancer`).
+  # loadBalancerIP: ""
+
+# -- Enable host network access. Required for mDNS device discovery (Hue, Chromecast, SSDP, Zigbee, etc.).
+# When enabled, the namespace PSS label is automatically set to `privileged`.
+hostNetwork: false
+# -- DNS policy for the pod. Should be `ClusterFirstWithHostNet` when `hostNetwork` is enabled.
+dnsPolicy: ClusterFirstWithHostNet
+
+# -- Persistent storage for the Home Assistant `/config` directory.
+persistence:
+  # -- Enable the PersistentVolumeClaim.
+  enabled: true
+  # -- Storage size.
+  size: 10Gi
+  # -- StorageClass name. Defaults to the cluster default when empty.
+  storageClassName: ""
+
+# -- Resource requests and limits for the Home Assistant container.
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+# -- Extra labels merged onto the Namespace created by this chart.
+# Useful for gateway selectors or additional PSS annotations.
+# The Pod Security Standards labels are managed automatically — no need to add them here.
+namespaceLabels: {}
+
+# -- CiliumNetworkPolicy configuration. Requires [Cilium CNI](https://cilium.io).
+networkPolicy:
+  # -- Enable CiliumNetworkPolicy rendering.
+  enabled: false
+  # -- Namespace where Prometheus runs. When set, adds an ingress rule allowing Prometheus scraping on port 8123.
+  prometheusNamespace: ""
+  # -- Namespace of the MQTT broker (e.g. EMQX). When set, adds an egress rule on port 1883.
+  mqttNamespace: ""
+  # -- Namespace of the PostgreSQL cluster. When set, adds an egress rule on port 5432.
+  postgresNamespace: ""
+
+# -- External Secrets Operator integration for pulling secrets from an external secret store.
+# Requires [ESO](https://external-secrets.io) installed in the cluster.
+# Each item creates an `ExternalSecret` resource that syncs a secret from the store into a Kubernetes `Secret`,
+# which is then mounted into the Home Assistant (and optionally code-server) containers.
+externalSecrets:
+  # -- Enable ExternalSecret rendering.
+  enabled: false
+  # -- List of secrets to sync.
+  items: []
+  # - name: homeassistant-secrets
+  #   # ClusterSecretStore name (e.g. onepassword-connect, vault, aws-ssm)
+  #   secretStoreRef: my-secret-store
+  #   # Key in the external store
+  #   remoteKey: homeassistant-secrets
+  #   # Key name inside the resulting Kubernetes Secret (also the filename when mounted)
+  #   secretKey: secrets.yaml
+  #   # File permission on the mounted secret. 0444 = world-readable.
+  #   defaultMode: 0444
+  # - name: home-assistant-ssh-key
+  #   secretStoreRef: my-secret-store
+  #   remoteKey: github-ssh-key
+  #   remoteProperty: private_key
+  #   secretKey: id_ed25519
+  #   # coderOnly: true mounts this secret only in code-server, not in Home Assistant.
+  #   coderOnly: true
+  #   mountPath: /mnt/ssh-key/id_ed25519
+  #   defaultMode: 0600
+
+# -- SSH `known_hosts` entries pre-loaded into code-server for authenticated git operations.
+# Without this, the first `git push/pull` to a new host blocks on an interactive host-key prompt,
+# which is not possible inside a browser-based editor. Add one line per host.
+sshKnownHosts:
+  # -- Enable the known_hosts ConfigMap and mount it into code-server.
+  enabled: false
+  # -- Raw known_hosts content (one entry per line).
+  # Get entries with: `ssh-keyscan github.com`
+  content: ""
+
+# -- Gateway API `HTTPRoute` resources. Requires [Gateway API CRDs](https://gateway-api.sigs.k8s.io).
+httproutes: []
+# - enabled: true
+#   name: ha-httproute
+#   namespace: home-assistant
+#   hostname: ha.example.com
+#   path: /
+#   timeout: "0s"
+#   gateway:
+#     name: my-gateway
+#     namespace: kube-system
+#     sectionName: https-listener
+#   backend:
+#     name: home-assistant
+#     port: 8123
+
+# -- Optional addons that run as sidecar containers alongside Home Assistant.
+addons:
+  # -- VS Code in the browser (code-server), sharing the `/config` volume with Home Assistant.
+  # Gives you a full editor for `configuration.yaml`, automations, and custom components
+  # without needing shell access to the node.
+  codeserver:
+    # -- Enable the code-server sidecar.
+    enabled: false
+    # -- code-server container image (LSIO build).
+    image:
+      repository: lscr.io/linuxserver/code-server
+      # -- Image tag. Defaults to `Chart.appVersion` when empty.
+      tag: ""
+    # -- Environment variables for code-server. Runs as the same PUID/PGID as Home Assistant
+    # so it has full read/write access to `/config`.
+    env:
+    - name: TZ
+      value: UTC
+    - name: PUID
+      value: "1000"
+    - name: PGID
+      value: "1000"
+    - name: DEFAULT_WORKSPACE
+      value: /config
+    - name: PASSWORD
+      value: ""
+    # -- Service for code-server. Use `ClusterIP` and protect with an Authentik outpost.
+    service:
+      type: ClusterIP
+      port: 12321
+    # -- Resource requests and limits for the code-server container.
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+    # -- Authentik proxy outpost for code-server.
+    # An outpost is a lightweight reverse proxy deployed next to your app that enforces
+    # Authentik authentication before forwarding traffic. It replaces the need for a
+    # built-in login screen — any user who hits code-server must first authenticate via
+    # your Authentik SSO. The outpost calls back to the Authentik server to validate sessions.
+    # Requires [Authentik](https://goauthentik.io) installed in the cluster and a
+    # Proxy Provider + Outpost configured for code-server.
+    authentikOutpost:
+      # -- Enable the Authentik proxy outpost Deployment and Service.
+      enabled: false
+      # -- Authentik proxy image.
+      image:
+        repository: ghcr.io/goauthentik/proxy
+        tag: "2026.2.3"
+      # -- Cluster-internal URL of the Authentik server (used by the outpost to validate sessions).
+      authentikHost: ""
+      # -- Public-facing Authentik URL (used for browser redirects to the login page).
+      authentikHostBrowser: ""
+      # -- Name of an existing Kubernetes Secret containing the outpost token under key `token`.
+      # Mutually exclusive with `externalSecret`. Create this secret manually or via another tool.
+      existingSecret: ""
+      # -- Fetch the outpost token from an external secret store via ESO instead of an existing secret.
+      externalSecret:
+        # -- Enable ExternalSecret rendering for the outpost token.
+        enabled: false
+        # -- ClusterSecretStore name.
+        secretStoreRef: ""
+        # -- Key in the secret store that holds the outpost token (must have a `token` property).
+        remoteKey: ""
+      # -- Resource requests and limits for the outpost proxy container.
+      resources:
+        requests:
+          cpu: 20m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi

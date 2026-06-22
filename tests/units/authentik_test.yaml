@@ -1,0 +1,102 @@
+suite: authentik outpost - deployment
+templates:
+  - templates/authentik-outpost-deployment.yaml
+release:
+  name: home-assistant
+  namespace: home-assistant
+
+tests:
+  - it: renders nothing when codeserver disabled
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders nothing when outpost disabled
+    set:
+      addons.codeserver.enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders Deployment and Service when outpost enabled
+    set:
+      addons.codeserver.enabled: true
+      addons.codeserver.authentikOutpost.enabled: true
+      addons.codeserver.authentikOutpost.existingSecret: "my-outpost-token"
+    asserts:
+      - hasDocuments:
+          count: 2
+
+  - it: uses existingSecret as token secret name
+    set:
+      addons.codeserver.enabled: true
+      addons.codeserver.authentikOutpost.enabled: true
+      addons.codeserver.authentikOutpost.existingSecret: "my-outpost-token"
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.name
+          value: my-outpost-token
+
+  - it: uses generated secret name when no existingSecret
+    set:
+      addons.codeserver.enabled: true
+      addons.codeserver.authentikOutpost.enabled: true
+    documentIndex: 0
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.name
+          value: home-assistant-authentik-outpost-token
+
+  - it: sets Authentik env vars from values
+    set:
+      addons.codeserver.enabled: true
+      addons.codeserver.authentikOutpost.enabled: true
+      addons.codeserver.authentikOutpost.authentikHost: "http://authentik.svc"
+      addons.codeserver.authentikOutpost.authentikHostBrowser: "https://sso.example.com"
+      addons.codeserver.authentikOutpost.existingSecret: "token"
+    documentIndex: 0
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[0].value
+          value: "http://authentik.svc"
+      - equal:
+          path: spec.template.spec.containers[0].env[2].value
+          value: "https://sso.example.com"
+---
+suite: authentik outpost - externalsecret
+templates:
+  - templates/authentik-outpost-externalsecret.yaml
+release:
+  name: home-assistant
+  namespace: home-assistant
+
+tests:
+  - it: renders nothing when ESO integration disabled
+    set:
+      addons.codeserver.enabled: true
+      addons.codeserver.authentikOutpost.enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders ExternalSecret when ESO integration enabled
+    set:
+      addons.codeserver.enabled: true
+      addons.codeserver.authentikOutpost.enabled: true
+      addons.codeserver.authentikOutpost.externalSecret.enabled: true
+      addons.codeserver.authentikOutpost.externalSecret.secretStoreRef: onepassword-connect
+      addons.codeserver.authentikOutpost.externalSecret.remoteKey: authentik-outpost-codeserver
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ExternalSecret
+      - equal:
+          path: spec.secretStoreRef.name
+          value: onepassword-connect
+      - equal:
+          path: spec.data[0].remoteRef.key
+          value: authentik-outpost-codeserver

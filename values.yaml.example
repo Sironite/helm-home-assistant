@@ -1,0 +1,138 @@
+image:
+  repository: lscr.io/linuxserver/homeassistant
+  tag: 2026.5.1
+  pullPolicy: IfNotPresent
+
+env:
+- name: TZ
+  value: Europe/Amsterdam
+- name: PUID
+  value: "1000"
+- name: PGID
+  value: "1000"
+
+service:
+  type: ClusterIP
+  port: 8123
+
+# Enable for mDNS device discovery (Hue, Chromecast, Zigbee, etc.)
+hostNetwork: true
+dnsPolicy: ClusterFirstWithHostNet
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClassName: standard
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+namespaceLabels:
+  gateway.example.com/allow: "true"
+
+networkPolicy:
+  enabled: true
+  prometheusNamespace: monitoring
+  mqttNamespace: mqtt
+  postgresNamespace: database
+
+externalSecrets:
+  enabled: true
+  items:
+  - name: homeassistant-secrets
+    secretStoreRef: my-secret-store
+    remoteKey: homeassistant-secrets
+    secretKey: secrets.yaml
+    defaultMode: 0444
+  - name: ha-ssh-key
+    secretStoreRef: my-secret-store
+    remoteKey: github-ssh-key
+    remoteProperty: private_key
+    secretKey: id_ed25519
+    coderOnly: true
+    mountPath: /mnt/ssh-key/id_ed25519
+    defaultMode: 0600
+
+sshKnownHosts:
+  enabled: true
+  content: "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
+
+httproutes:
+- enabled: true
+  name: ha-httproute
+  namespace: home-assistant
+  hostname: ha.example.com
+  path: /
+  timeout: "0s"
+  gateway:
+    name: my-gateway
+    namespace: kube-system
+    sectionName: https-listener
+  backend:
+    name: home-assistant
+    port: 8123
+
+- enabled: true
+  name: codeserver-httproute
+  namespace: home-assistant
+  hostname: codeserver.example.com
+  path: /
+  timeout: "0s"
+  gateway:
+    name: my-gateway
+    namespace: kube-system
+    sectionName: https-listener
+  backend:
+    name: home-assistant-authentik-outpost
+    port: 9000
+
+addons:
+  codeserver:
+    enabled: true
+    image:
+      repository: lscr.io/linuxserver/code-server
+      tag: 4.100.0
+    env:
+    - name: TZ
+      value: Europe/Amsterdam
+    - name: PUID
+      value: "1000"
+    - name: PGID
+      value: "1000"
+    - name: DEFAULT_WORKSPACE
+      value: /config
+    - name: PASSWORD
+      value: ""
+    service:
+      type: ClusterIP
+      port: 12321
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    authentikOutpost:
+      enabled: true
+      image:
+        repository: ghcr.io/goauthentik/proxy
+        tag: "2026.2.3"
+      authentikHost: "http://authentik-server.authentik.svc"
+      authentikHostBrowser: "https://sso.example.com"
+      externalSecret:
+        enabled: true
+        secretStoreRef: my-secret-store
+        remoteKey: authentik-outpost-codeserver
+      resources:
+        requests:
+          cpu: 20m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi

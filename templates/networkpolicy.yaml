@@ -1,0 +1,75 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ include "home-assistant.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+
+  ingress:
+  - fromEntities:
+    - cluster
+    toPorts:
+    - ports:
+      - port: "8123"
+        protocol: TCP
+
+  {{- if .Values.addons.codeserver.enabled }}
+  - fromEntities:
+    - cluster
+    toPorts:
+    - ports:
+      - port: "8443"
+        protocol: TCP
+  {{- end }}
+
+  {{- if .Values.networkPolicy.prometheusNamespace }}
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: {{ .Values.networkPolicy.prometheusNamespace }}
+        app.kubernetes.io/name: prometheus
+    toPorts:
+    - ports:
+      - port: "8123"
+        protocol: TCP
+  {{- end }}
+
+  egress:
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+
+  {{- if .Values.networkPolicy.mqttNamespace }}
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: {{ .Values.networkPolicy.mqttNamespace }}
+    toPorts:
+    - ports:
+      - port: "1883"
+        protocol: TCP
+  {{- end }}
+
+  {{- if .Values.networkPolicy.postgresNamespace }}
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: {{ .Values.networkPolicy.postgresNamespace }}
+    toPorts:
+    - ports:
+      - port: "5432"
+        protocol: TCP
+  {{- end }}
+
+  - toEntities:
+    - world
+    - cluster
+{{- end }}

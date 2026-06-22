@@ -1,0 +1,192 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+This chart deploys [Home Assistant](https://www.home-assistant.io) as a `StatefulSet` with persistent
+storage for `/config`. It ships several opt-in addons and integrations that are disabled by default —
+enable only what your cluster already provides.
+
+## Usage
+
+**Helm repo (GitHub Pages):**
+
+```bash
+helm repo add sironite https://sironite.github.io/helm-home-assistant
+helm repo update
+helm install home-assistant sironite/home-assistant \
+  --namespace home-assistant --create-namespace \
+  -f my-values.yaml
+```
+
+**OCI (GHCR):**
+
+```bash
+helm install home-assistant oci://ghcr.io/sironite/home-assistant \
+  --version {{ template "chart.version" . }} \
+  --namespace home-assistant --create-namespace \
+  -f my-values.yaml
+```
+
+## Addons and integrations
+
+### code-server (`addons.codeserver`)
+
+Runs [VS Code in the browser](https://github.com/linuxserver/docker-code-server) as a sidecar container
+alongside Home Assistant. Both containers share the `/config` volume, so you can edit
+`configuration.yaml`, automations, and custom components from any browser without needing SSH or
+`kubectl exec`.
+
+Enable with:
+
+```yaml
+addons:
+  codeserver:
+    enabled: true
+```
+
+### Authentik outpost (`addons.codeserver.authentikOutpost`)
+
+code-server has no meaningful built-in authentication — disabling the password (the default in this
+chart) leaves it open to anyone who can reach the URL. An **Authentik outpost** solves this.
+
+An outpost is a lightweight reverse proxy sidecar deployed next to your app. All traffic destined for
+code-server hits the outpost first. The outpost calls back to your central
+[Authentik](https://goauthentik.io) server to check whether the user has an active, authorised
+session. If yes, the request is forwarded to code-server. If not, the user is redirected to the
+Authentik login page.
+
+This means code-server gets SSO for free — any identity provider you have wired into Authentik
+(LDAP, OIDC, SAML, passkeys) works automatically, with full MFA support.
+
+**Prerequisites:**
+- Authentik installed in the cluster
+- A *Proxy Provider* configured in Authentik pointing at code-server
+- An *Outpost* created in Authentik and the outpost token stored in a secret
+
+**Token secret** — choose one approach:
+
+```yaml
+# Option A: existing Kubernetes Secret (key must be named `token`)
+addons:
+  codeserver:
+    authentikOutpost:
+      enabled: true
+      existingSecret: "my-outpost-token-secret"
+
+# Option B: pull token from an external store via ESO
+addons:
+  codeserver:
+    authentikOutpost:
+      enabled: true
+      externalSecret:
+        enabled: true
+        secretStoreRef: onepassword-connect
+        remoteKey: authentik-outpost-codeserver   # must have a `token` property
+```
+
+### External Secrets (`externalSecrets`)
+
+[External Secrets Operator](https://external-secrets.io) (ESO) syncs secrets from an external store
+(1Password, HashiCorp Vault, AWS SSM, Azure Key Vault, …) into Kubernetes `Secret` resources that are
+then mounted into the containers.
+
+This chart uses ESO to inject two kinds of secrets into Home Assistant and code-server:
+
+| Secret | Purpose |
+|--------|---------|
+| `secrets.yaml` | Home Assistant [secrets file](https://www.home-assistant.io/docs/configuration/secrets/) — keeps passwords and tokens out of `configuration.yaml` |
+| SSH private key | Lets code-server authenticate to GitHub/GitLab for git push/pull of your HA config |
+
+Items with `coderOnly: true` are mounted only in the code-server container, not in Home Assistant.
+
+```yaml
+externalSecrets:
+  enabled: true
+  items:
+  - name: homeassistant-secrets
+    secretStoreRef: my-cluster-secret-store
+    remoteKey: homeassistant-secrets
+    secretKey: secrets.yaml
+    defaultMode: 0444           # HA needs read access; LSIO init can't chown read-only mounts
+  - name: ha-ssh-key
+    secretStoreRef: my-cluster-secret-store
+    remoteKey: github-ssh-key
+    remoteProperty: private_key
+    secretKey: id_ed25519
+    coderOnly: true
+    mountPath: /mnt/ssh-key/id_ed25519
+    defaultMode: 0600
+```
+
+### SSH known hosts (`sshKnownHosts`)
+
+When code-server runs a `git push` or `git pull`, SSH must verify the remote server's host key.
+In an interactive terminal this shows a prompt — *"Are you sure you want to continue connecting?"*.
+Inside a browser-based editor there is no way to answer that prompt, so the git command hangs or
+fails.
+
+Pre-loading `known_hosts` removes the prompt by telling SSH which host keys to trust upfront.
+
+```yaml
+sshKnownHosts:
+  enabled: true
+  # Get the value with: ssh-keyscan github.com
+  content: "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
+```
+
+Run `ssh-keyscan <hostname>` for each git host you use (GitHub, GitLab, Gitea, Forgejo, etc.) and
+concatenate the lines.
+
+### Gateway API HTTPRoutes (`httproutes`)
+
+Creates `HTTPRoute` resources for use with a [Gateway API](https://gateway-api.sigs.k8s.io) compatible
+controller (Cilium, Envoy Gateway, nginx-gateway, Istio, …). Requires the Gateway API CRDs to be
+installed in the cluster.
+
+```yaml
+httproutes:
+- enabled: true
+  name: ha-httproute
+  hostname: ha.example.com
+  path: /
+  gateway:
+    name: my-gateway
+    namespace: kube-system
+    sectionName: https-listener
+  backend:
+    name: home-assistant
+    port: 8123
+```
+
+### Cilium NetworkPolicy (`networkPolicy`)
+
+Optional `CiliumNetworkPolicy` that locks down pod traffic to only what Home Assistant actually needs.
+Requires [Cilium CNI](https://cilium.io).
+
+```yaml
+networkPolicy:
+  enabled: true
+  prometheusNamespace: monitoring   # allow Prometheus scraping
+  mqttNamespace: emqx               # allow MQTT broker egress
+  postgresNamespace: cnpg-system    # allow PostgreSQL egress (HA recorder)
+```
+
+## Prerequisites summary
+
+| Feature | Cluster requirement |
+|---------|-------------------|
+| `externalSecrets.enabled` | [External Secrets Operator](https://external-secrets.io) |
+| `httproutes` | [Gateway API CRDs](https://gateway-api.sigs.k8s.io) |
+| `networkPolicy.enabled` | [Cilium CNI](https://cilium.io) |
+| `addons.codeserver.authentikOutpost.enabled` | [Authentik](https://goauthentik.io) |
+| `hostNetwork: true` | Namespace PSS `privileged` (set automatically by this chart) |
+
+## Values
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
