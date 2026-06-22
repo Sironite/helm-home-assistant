@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.4...home-assistant-v1.2.0) (2026-06-22)
+
+
+### Features
+
+* add values schema and GPG chart signing ([fed8a4d](https://github.com/Sironite/helm-home-assistant/commit/fed8a4d9f35709e68d00e6ed45c1146324a9c0d7))
+
 ## [1.1.4](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.3...home-assistant-v1.1.4) (2026-06-22)
 
 
