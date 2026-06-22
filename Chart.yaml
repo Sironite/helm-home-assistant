@@ -10,6 +10,7 @@ keywords:
   - smart-home
   - iot
   - automation
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/home-assistant.png
 home: https://www.home-assistant.io
 sources:
   - https://github.com/home-assistant/core
