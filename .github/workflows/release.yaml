@@ -39,14 +39,14 @@ jobs:
       - name: Import GPG signing key
         run: |
           echo "${{ secrets.HELM_GPG_PRIVATE_KEY }}" | gpg --batch --import
-          gpg --export > /tmp/pubring.gpg
+          gpg --export-secret-keys > /tmp/secring.gpg
 
       - name: Package and sign chart
         run: |
           helm package . \
             --sign \
             --key "Sironite Helm Charts" \
-            --keyring /tmp/pubring.gpg
+            --keyring /tmp/secring.gpg
 
       - name: Publish to GitHub Pages
         run: |
