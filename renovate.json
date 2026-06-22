@@ -2,6 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
   "labels": ["renovate"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^Chart\\.yaml$"],
+      "matchStrings": ["appVersion: \"(?<currentValue>[^\"]+)\""],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "lscr.io/linuxserver/homeassistant"
+    }
+  ],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
@@ -9,7 +18,7 @@
       "automergeType": "pr"
     },
     {
-      "matchManagers": ["helm-values"],
+      "matchManagers": ["helm-values", "regex"],
       "matchPackageNames": ["lscr.io/linuxserver/homeassistant"],
       "automerge": false
     }
