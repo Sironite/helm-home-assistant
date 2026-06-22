@@ -19,6 +19,21 @@ jobs:
 
       - uses: azure/setup-helm@v4
 
+      - name: Regenerate README
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          docker run --rm \
+            --volume "$PWD:/helm-docs" \
+            --workdir /helm-docs \
+            jnorwood/helm-docs:v1.14.2 \
+            --chart-search-root=. \
+            --template-files=docs/README.md.gotmpl \
+            --output-file=README.md
+          git add README.md
+          git diff --cached --quiet || git commit -m "docs: regenerate README for $(grep '^version:' Chart.yaml | awk '{print $2}')"
+          git push origin HEAD:main
+
       - name: Get chart version
         id: chart
         run: echo "version=$(grep '^version:' Chart.yaml | awk '{print $2}')" >> $GITHUB_OUTPUT
