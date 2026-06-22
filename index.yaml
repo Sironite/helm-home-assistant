@@ -2,6 +2,41 @@ apiVersion: v1
 entries:
   home-assistant:
   - annotations:
+      artifacthub.io/category: integration-delivery
+      artifacthub.io/changes: |
+        - kind: added
+          description: Initial release
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Home Assistant
+          url: https://www.home-assistant.io
+        - name: Source
+          url: https://github.com/sironite/helm-home-assistant
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 2026.5.1
+    created: "2026-06-22T20:30:29.225329071Z"
+    description: Home Assistant on Kubernetes with optional code-server addon and
+      Authentik outpost
+    digest: fb5749525461e3410d6b04125501662dcf2233c8e0219f6b9ec032071755250e
+    home: https://www.home-assistant.io
+    keywords:
+    - home-assistant
+    - smart-home
+    - iot
+    - automation
+    maintainers:
+    - name: sironite
+      url: https://github.com/sironite
+    name: home-assistant
+    sources:
+    - https://github.com/home-assistant/core
+    - https://github.com/sironite/helm-home-assistant
+    type: application
+    urls:
+    - https://sironite.github.io/helm-home-assistant/home-assistant-1.1.2.tgz
+    version: 1.1.2
+  - annotations:
       artifacthub.io/category: monitoring
       artifacthub.io/changes: |
         - kind: added
@@ -15,7 +50,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2026.5.1
-    created: "2026-06-22T19:31:52.644220953Z"
+    created: "2026-06-22T20:30:29.224468919Z"
     description: Home Assistant on Kubernetes with optional code-server addon and
       Authentik outpost
     digest: 0ca48314b6de2c9b084797f0c61f338e45927290d5a866f1e4675c1e813df257
@@ -36,4 +71,4 @@ entries:
     urls:
     - https://sironite.github.io/helm-home-assistant/home-assistant-1.1.0.tgz
     version: 1.1.0
-generated: "2026-06-22T19:31:52.643036509Z"
+generated: "2026-06-22T20:30:29.223466998Z"
