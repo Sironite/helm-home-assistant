@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: azure/setup-helm@v4
+      - uses: azure/setup-helm@v5
 
       - name: Lint chart
         run: helm lint . -f values.yaml.example
@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: azure/setup-helm@v4
+      - uses: azure/setup-helm@v5
 
       - name: Install helm-unittest
         run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version 0.7.1 --verify=false
