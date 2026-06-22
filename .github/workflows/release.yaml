@@ -3,6 +3,7 @@ name: Release Chart
 on:
   push:
     tags: ["home-assistant-v*"]
+  workflow_dispatch:
 
 jobs:
   release:
