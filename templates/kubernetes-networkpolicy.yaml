@@ -1,0 +1,54 @@
+{{- if .Values.networkPolicy.kubernetes.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "home-assistant.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "home-assistant.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "home-assistant.selectorLabels" . | nindent 6 }}
+  policyTypes:
+  - Ingress
+  {{- if .Values.networkPolicy.extraEgress }}
+  - Egress
+  {{- end }}
+
+  ingress:
+  - from:
+    - namespaceSelector: {}
+    ports:
+    - port: 8123
+      protocol: TCP
+
+  {{- if .Values.addons.codeserver.enabled }}
+  - from:
+    - namespaceSelector: {}
+    ports:
+    - port: 8443
+      protocol: TCP
+  {{- end }}
+
+  {{- if .Values.networkPolicy.prometheusNamespace }}
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Values.networkPolicy.prometheusNamespace }}
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: prometheus
+    ports:
+    - port: 8123
+      protocol: TCP
+  {{- end }}
+  {{- with .Values.networkPolicy.extraIngress }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+
+  {{- if .Values.networkPolicy.extraEgress }}
+  egress:
+  {{- toYaml .Values.networkPolicy.extraEgress | nindent 2 }}
+  {{- end }}
+{{- end }}

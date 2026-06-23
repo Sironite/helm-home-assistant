@@ -1,0 +1,79 @@
+suite: ingress
+templates:
+  - templates/Ingress.yaml
+release:
+  name: home-assistant
+  namespace: home-assistant
+
+tests:
+  - it: renders nothing by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders Ingress when enabled
+    set:
+      ingress.enabled: true
+      ingress.hostname: ha.example.com
+      ingress.className: nginx
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.ingressClassName
+          value: nginx
+      - equal:
+          path: spec.rules[0].host
+          value: ha.example.com
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.port.number
+          value: 8123
+
+  - it: omits ingressClassName when empty
+    set:
+      ingress.enabled: true
+      ingress.hostname: ha.example.com
+    asserts:
+      - notExists:
+          path: spec.ingressClassName
+
+  - it: renders TLS when configured
+    set:
+      ingress.enabled: true
+      ingress.hostname: ha.example.com
+      ingress.tls:
+        - hosts:
+            - ha.example.com
+          secretName: home-assistant-tls
+    asserts:
+      - equal:
+          path: spec.tls[0].secretName
+          value: home-assistant-tls
+
+  - it: renders codeserver Ingress when addon and ingress both enabled
+    set:
+      addons.codeserver.enabled: true
+      addons.codeserver.image.tag: "4.118.0"
+      addons.codeserver.ingress.enabled: true
+      addons.codeserver.ingress.hostname: codeserver.example.com
+      addons.codeserver.ingress.className: nginx
+    documentSelector:
+      path: metadata.name
+      value: home-assistant-codeserver
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.rules[0].host
+          value: codeserver.example.com
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.port.number
+          value: 12321
+
+  - it: does not render codeserver Ingress when codeserver disabled
+    set:
+      addons.codeserver.ingress.enabled: true
+      addons.codeserver.ingress.hostname: codeserver.example.com
+    asserts:
+      - hasDocuments:
+          count: 0

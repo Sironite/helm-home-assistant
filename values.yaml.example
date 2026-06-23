@@ -36,10 +36,24 @@ namespaceLabels:
   gateway.example.com/allow: "true"
 
 networkPolicy:
-  enabled: true
+  cilium:
+    enabled: true
+  kubernetes:
+    enabled: false
   prometheusNamespace: monitoring
   mqttNamespace: mqtt
   postgresNamespace: database
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "0"
+  hostname: ha.example.com
+  tls:
+  - hosts:
+    - ha.example.com
+    secretName: home-assistant-tls
 
 externalSecrets:
   enabled: true

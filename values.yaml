@@ -62,16 +62,48 @@ resources:
 # The Pod Security Standards labels are managed automatically — no need to add them here.
 namespaceLabels: {}
 
-# -- CiliumNetworkPolicy configuration. Requires [Cilium CNI](https://cilium.io).
+# -- NetworkPolicy configuration.
 networkPolicy:
-  # -- Enable CiliumNetworkPolicy rendering.
-  enabled: false
+  cilium:
+    # -- Enable CiliumNetworkPolicy rendering. Requires [Cilium CNI](https://cilium.io).
+    enabled: false
+  kubernetes:
+    # -- Enable standard Kubernetes NetworkPolicy rendering. Works with any CNI that supports NetworkPolicy.
+    enabled: false
   # -- Namespace where Prometheus runs. When set, adds an ingress rule allowing Prometheus scraping on port 8123.
   prometheusNamespace: ""
   # -- Namespace of the MQTT broker (e.g. EMQX). When set, adds an egress rule on port 1883.
   mqttNamespace: ""
   # -- Namespace of the PostgreSQL cluster. When set, adds an egress rule on port 5432.
   postgresNamespace: ""
+  # -- Extra ingress rules appended to the NetworkPolicy (both Cilium and Kubernetes).
+  extraIngress: []
+  # - fromEndpoints:                          # Cilium syntax
+  #     - matchLabels:
+  #         k8s:io.kubernetes.pod.namespace: my-namespace
+  #   toPorts:
+  #     - ports:
+  #         - port: "8123"
+  # - from:                                   # Kubernetes syntax
+  #     - namespaceSelector:
+  #         matchLabels:
+  #           kubernetes.io/metadata.name: my-namespace
+  #   ports:
+  #     - port: 8123
+  # -- Extra egress rules appended to the NetworkPolicy (both Cilium and Kubernetes).
+  extraEgress: []
+  # - toEndpoints:                            # Cilium syntax
+  #     - matchLabels:
+  #         k8s:io.kubernetes.pod.namespace: my-namespace
+  #   toPorts:
+  #     - ports:
+  #         - port: "5432"
+  # - to:                                     # Kubernetes syntax
+  #     - namespaceSelector:
+  #         matchLabels:
+  #           kubernetes.io/metadata.name: my-namespace
+  #   ports:
+  #     - port: 5432
 
 # -- External Secrets Operator integration for pulling secrets from an external secret store.
 # Requires [ESO](https://external-secrets.io) installed in the cluster.
@@ -110,6 +142,22 @@ sshKnownHosts:
   # -- Raw known_hosts content (one entry per line).
   # Get entries with: `ssh-keyscan github.com`
   content: ""
+
+# -- Standard Kubernetes Ingress resource. Use when a Gateway API HTTPRoute is not available.
+ingress:
+  # -- Enable Ingress rendering.
+  enabled: false
+  # -- IngressClass name (e.g. `nginx`, `traefik`).
+  className: ""
+  # -- Annotations merged onto the Ingress resource.
+  annotations: {}
+  # -- Hostname for the Ingress rule.
+  hostname: ""
+  # -- TLS configuration.
+  tls: []
+  # - hosts:
+  #   - ha.example.com
+  #   secretName: home-assistant-tls
 
 # -- Gateway API `HTTPRoute` resources. Requires [Gateway API CRDs](https://gateway-api.sigs.k8s.io).
 httproutes: []
@@ -165,6 +213,21 @@ addons:
       limits:
         cpu: 500m
         memory: 512Mi
+    # -- Standard Kubernetes Ingress for code-server. Use when a Gateway API HTTPRoute is not available.
+    ingress:
+      # -- Enable Ingress rendering for code-server.
+      enabled: false
+      # -- IngressClass name (e.g. `nginx`, `traefik`).
+      className: ""
+      # -- Annotations merged onto the Ingress resource.
+      annotations: {}
+      # -- Hostname for the code-server Ingress rule.
+      hostname: ""
+      # -- TLS configuration.
+      tls: []
+      # - hosts:
+      #   - codeserver.example.com
+      #   secretName: codeserver-tls
 
     # -- Authentik proxy outpost for code-server.
     # An outpost is a lightweight reverse proxy deployed next to your app that enforces

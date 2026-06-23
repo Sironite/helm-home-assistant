@@ -1,0 +1,74 @@
+suite: kubernetes-networkpolicy
+templates:
+  - templates/kubernetes-networkpolicy.yaml
+release:
+  name: home-assistant
+  namespace: home-assistant
+
+tests:
+  - it: renders nothing by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders NetworkPolicy when kubernetes enabled
+    set:
+      networkPolicy.kubernetes.enabled: true
+    asserts:
+      - isKind:
+          of: NetworkPolicy
+      - equal:
+          path: metadata.name
+          value: home-assistant
+
+  - it: includes prometheus ingress rule when namespace set
+    set:
+      networkPolicy.kubernetes.enabled: true
+      networkPolicy.prometheusNamespace: monitoring
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            from:
+              - namespaceSelector:
+                  matchLabels:
+                    kubernetes.io/metadata.name: monitoring
+                podSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: prometheus
+            ports:
+              - port: 8123
+                protocol: TCP
+
+  - it: includes codeserver ingress rule when addon enabled
+    set:
+      networkPolicy.kubernetes.enabled: true
+      addons.codeserver.enabled: true
+      addons.codeserver.image.tag: "4.118.0"
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            from:
+              - namespaceSelector: {}
+            ports:
+              - port: 8443
+                protocol: TCP
+
+  - it: appends extraIngress and adds Egress policyType when extraEgress set
+    set:
+      networkPolicy.kubernetes.enabled: true
+      networkPolicy.extraEgress:
+        - to:
+            - namespaceSelector:
+                matchLabels:
+                  kubernetes.io/metadata.name: my-db
+          ports:
+            - port: 5432
+    asserts:
+      - contains:
+          path: spec.policyTypes
+          content: Egress
+      - equal:
+          path: spec.egress[0].ports[0].port
+          value: 5432

@@ -1,4 +1,4 @@
-{{- if .Values.networkPolicy.enabled }}
+{{- if .Values.networkPolicy.cilium.enabled }}
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -36,6 +36,9 @@ spec:
       - port: "8123"
         protocol: TCP
   {{- end }}
+  {{- with .Values.networkPolicy.extraIngress }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
 
   egress:
   - toEndpoints:
@@ -72,4 +75,7 @@ spec:
   - toEntities:
     - world
     - cluster
+  {{- with .Values.networkPolicy.extraEgress }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
 {{- end }}
