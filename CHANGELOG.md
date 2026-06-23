@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.2.0...home-assistant-v1.2.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* export secret keyring for helm package --sign ([87718f6](https://github.com/Sironite/helm-home-assistant/commit/87718f627e4ebc818b4dab4abe420f953b100545))
+* use legacy OpenPGP keyring format for helm package --sign ([ac8d42c](https://github.com/Sironite/helm-home-assistant/commit/ac8d42c3e213044d6d0ee6c4e78e5ca6b64474d5))
+
 ## [1.2.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.1.4...home-assistant-v1.2.0) (2026-06-22)
 
 
