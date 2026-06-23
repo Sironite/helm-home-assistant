@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.2.1...home-assistant-v2.0.0) (2026-06-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* networkPolicy.enabled is removed. Replace with
+
+### Features
+
+* add Ingress, Kubernetes NetworkPolicy, and custom policy rules ([8556d03](https://github.com/Sironite/helm-home-assistant/commit/8556d0331c8fc1f05c475446fa5458860917f940))
+
 ## [1.2.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.2.0...home-assistant-v1.2.1) (2026-06-23)
 
 
