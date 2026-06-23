@@ -1,0 +1,47 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+annotations:
+  artifacthub.io/category: integration-delivery
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial release
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/links: |
+    - name: Home Assistant
+      url: https://www.home-assistant.io
+    - name: Source
+      url: https://github.com/sironite/helm-home-assistant
+  artifacthub.io/prerelease: "false"
+apiVersion: v2
+appVersion: 2026.6.4
+description: Home Assistant on Kubernetes with optional code-server addon and Authentik
+  outpost
+home: https://www.home-assistant.io
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/home-assistant.png
+keywords:
+- - home-assistant
+- - smart-home
+- - iot
+- - automation
+maintainers:
+- - name: sironite
+  url: https://github.com/sironite
+name: home-assistant
+sources:
+- - https://github.com/home-assistant/core
+- - https://github.com/sironite/helm-home-assistant
+type: application
+version: 2.0.0
+
+...
+files:
+  home-assistant-2.0.0.tgz: sha256:86d3728e5713794ce0554c78d3deedd990f3b5a46b21060a9a239edeaaa9bdd1
+
+-----BEGIN PGP SIGNATURE-----
+
+wrsEARYKAG0Fgmo6OrEJEJGS1fu6+TAiRRQAAAAAABwAIHNhbHRAbm90YXRpb25z
+Lm9wZW5wZ3Bqcy5vcmc/8rD/Svm7X6CmhCF2fBd1/PYjIFOp9FSlxU3nk5SY7hYh
+BNxo1ll5fY7SMucbq5GS1fu6+TAiAAAu0QD/S32+GrYScx9J5Pc/Xk5rzFzv25lA
+O0sKiHqUDJCaaxoBAMX0NaUnXhbDVxy8GFWuFd9/7HPo4IW6IhRDyGxL6yUC
+-----END PGP SIGNATURE-----
