@@ -1,7 +1,7 @@
 # home-assistant
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/helm-home-assistant)](https://artifacthub.io/packages/search?repo=helm-home-assistant)
-[![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-informational?style=flat-square)](https://github.com/Sironite/helm-home-assistant/releases/tag/home-assistant-v1.2.0) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) [![AppVersion: 2026.6.4](https://img.shields.io/badge/AppVersion-2026.6.4-informational?style=flat-square)](https://github.com/home-assistant/core/releases/tag/2026.6.4)
+[![Version: 1.2.1](https://img.shields.io/badge/Version-1.2.1-informational?style=flat-square)](https://github.com/Sironite/helm-home-assistant/releases/tag/home-assistant-v1.2.1) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) [![AppVersion: 2026.6.4](https://img.shields.io/badge/AppVersion-2026.6.4-informational?style=flat-square)](https://github.com/home-assistant/core/releases/tag/2026.6.4)
 
 Home Assistant on Kubernetes with optional code-server addon and Authentik outpost
 
@@ -25,7 +25,7 @@ helm install home-assistant sironite/home-assistant \
 
 ```bash
 helm install home-assistant oci://ghcr.io/sironite/home-assistant \
-  --version 1.2.0 \
+  --version 1.2.1 \
   --namespace home-assistant --create-namespace \
   -f my-values.yaml
 ```
