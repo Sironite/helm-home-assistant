@@ -17,7 +17,7 @@ jobs:
       tag_name: ${{ steps.release-please.outputs.tag_name }}
       version: ${{ steps.release-please.outputs.major }}.${{ steps.release-please.outputs.minor }}.${{ steps.release-please.outputs.patch }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release-please
         with:
           config-file: .github/release-please-config.json
