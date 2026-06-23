@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v2.0.0...home-assistant-v2.0.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* update ArtifactHub README with 2.0.0 docs ([3e0bc42](https://github.com/Sironite/helm-home-assistant/commit/3e0bc422fc545fef5a2019128163f1e9e4fcaa1d))
+
 ## [2.0.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v1.2.1...home-assistant-v2.0.0) (2026-06-23)
 
 
