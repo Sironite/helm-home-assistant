@@ -3,7 +3,7 @@ name: home-assistant
 description: Home Assistant on Kubernetes with optional code-server addon and
   Authentik outpost
 type: application
-version: 2.0.0
+version: 2.0.1
 appVersion: "2026.6.4"
 keywords:
   - home-assistant
