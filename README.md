@@ -1,7 +1,7 @@
 # home-assistant
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/helm-home-assistant)](https://artifacthub.io/packages/search?repo=helm-home-assistant)
-[![Version: 1.2.1](https://img.shields.io/badge/Version-1.2.1-informational?style=flat-square)](https://github.com/Sironite/helm-home-assistant/releases/tag/home-assistant-v1.2.1) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) [![AppVersion: 2026.6.4](https://img.shields.io/badge/AppVersion-2026.6.4-informational?style=flat-square)](https://github.com/home-assistant/core/releases/tag/2026.6.4)
+[![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square)](https://github.com/Sironite/helm-home-assistant/releases/tag/home-assistant-v2.0.0) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) [![AppVersion: 2026.6.4](https://img.shields.io/badge/AppVersion-2026.6.4-informational?style=flat-square)](https://github.com/home-assistant/core/releases/tag/2026.6.4)
 
 Home Assistant on Kubernetes with optional code-server addon and Authentik outpost
 
@@ -25,7 +25,7 @@ helm install home-assistant sironite/home-assistant \
 
 ```bash
 helm install home-assistant oci://ghcr.io/sironite/home-assistant \
-  --version 1.2.1 \
+  --version 2.0.0 \
   --namespace home-assistant --create-namespace \
   -f my-values.yaml
 ```
@@ -190,8 +190,8 @@ networkPolicy:
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| addons | object | `{"codeserver":{"authentikOutpost":{"authentikHost":"","authentikHostBrowser":"","enabled":false,"existingSecret":"","externalSecret":{"enabled":false,"remoteKey":"","secretStoreRef":""},"image":{"repository":"ghcr.io/goauthentik/proxy","tag":"2026.5.3"},"resources":{"limits":{"cpu":"200m","memory":"256Mi"},"requests":{"cpu":"20m","memory":"64Mi"}}},"enabled":false,"env":[{"name":"TZ","value":"UTC"},{"name":"PUID","value":"1000"},{"name":"PGID","value":"1000"},{"name":"DEFAULT_WORKSPACE","value":"/config"},{"name":"PASSWORD","value":""}],"image":{"repository":"lscr.io/linuxserver/code-server","tag":""},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"50m","memory":"128Mi"}},"service":{"port":12321,"type":"ClusterIP"}}}` | Optional addons that run as sidecar containers alongside Home Assistant. |
-| addons.codeserver | object | `{"authentikOutpost":{"authentikHost":"","authentikHostBrowser":"","enabled":false,"existingSecret":"","externalSecret":{"enabled":false,"remoteKey":"","secretStoreRef":""},"image":{"repository":"ghcr.io/goauthentik/proxy","tag":"2026.5.3"},"resources":{"limits":{"cpu":"200m","memory":"256Mi"},"requests":{"cpu":"20m","memory":"64Mi"}}},"enabled":false,"env":[{"name":"TZ","value":"UTC"},{"name":"PUID","value":"1000"},{"name":"PGID","value":"1000"},{"name":"DEFAULT_WORKSPACE","value":"/config"},{"name":"PASSWORD","value":""}],"image":{"repository":"lscr.io/linuxserver/code-server","tag":""},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"50m","memory":"128Mi"}},"service":{"port":12321,"type":"ClusterIP"}}` | VS Code in the browser (code-server), sharing the `/config` volume with Home Assistant. Gives you a full editor for `configuration.yaml`, automations, and custom components without needing shell access to the node. |
+| addons | object | `{"codeserver":{"authentikOutpost":{"authentikHost":"","authentikHostBrowser":"","enabled":false,"existingSecret":"","externalSecret":{"enabled":false,"remoteKey":"","secretStoreRef":""},"image":{"repository":"ghcr.io/goauthentik/proxy","tag":"2026.5.3"},"resources":{"limits":{"cpu":"200m","memory":"256Mi"},"requests":{"cpu":"20m","memory":"64Mi"}}},"enabled":false,"env":[{"name":"TZ","value":"UTC"},{"name":"PUID","value":"1000"},{"name":"PGID","value":"1000"},{"name":"DEFAULT_WORKSPACE","value":"/config"},{"name":"PASSWORD","value":""}],"image":{"repository":"lscr.io/linuxserver/code-server","tag":""},"ingress":{"annotations":{},"className":"","enabled":false,"hostname":"","tls":[]},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"50m","memory":"128Mi"}},"service":{"port":12321,"type":"ClusterIP"}}}` | Optional addons that run as sidecar containers alongside Home Assistant. |
+| addons.codeserver | object | `{"authentikOutpost":{"authentikHost":"","authentikHostBrowser":"","enabled":false,"existingSecret":"","externalSecret":{"enabled":false,"remoteKey":"","secretStoreRef":""},"image":{"repository":"ghcr.io/goauthentik/proxy","tag":"2026.5.3"},"resources":{"limits":{"cpu":"200m","memory":"256Mi"},"requests":{"cpu":"20m","memory":"64Mi"}}},"enabled":false,"env":[{"name":"TZ","value":"UTC"},{"name":"PUID","value":"1000"},{"name":"PGID","value":"1000"},{"name":"DEFAULT_WORKSPACE","value":"/config"},{"name":"PASSWORD","value":""}],"image":{"repository":"lscr.io/linuxserver/code-server","tag":""},"ingress":{"annotations":{},"className":"","enabled":false,"hostname":"","tls":[]},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"50m","memory":"128Mi"}},"service":{"port":12321,"type":"ClusterIP"}}` | VS Code in the browser (code-server), sharing the `/config` volume with Home Assistant. Gives you a full editor for `configuration.yaml`, automations, and custom components without needing shell access to the node. |
 | addons.codeserver.authentikOutpost | object | `{"authentikHost":"","authentikHostBrowser":"","enabled":false,"existingSecret":"","externalSecret":{"enabled":false,"remoteKey":"","secretStoreRef":""},"image":{"repository":"ghcr.io/goauthentik/proxy","tag":"2026.5.3"},"resources":{"limits":{"cpu":"200m","memory":"256Mi"},"requests":{"cpu":"20m","memory":"64Mi"}}}` | Authentik proxy outpost for code-server. An outpost is a lightweight reverse proxy deployed next to your app that enforces Authentik authentication before forwarding traffic. It replaces the need for a built-in login screen — any user who hits code-server must first authenticate via your Authentik SSO. The outpost calls back to the Authentik server to validate sessions. Requires [Authentik](https://goauthentik.io) installed in the cluster and a Proxy Provider + Outpost configured for code-server. |
 | addons.codeserver.authentikOutpost.authentikHost | string | `""` | Cluster-internal URL of the Authentik server (used by the outpost to validate sessions). |
 | addons.codeserver.authentikOutpost.authentikHostBrowser | string | `""` | Public-facing Authentik URL (used for browser redirects to the login page). |
@@ -207,6 +207,12 @@ networkPolicy:
 | addons.codeserver.env | list | `[{"name":"TZ","value":"UTC"},{"name":"PUID","value":"1000"},{"name":"PGID","value":"1000"},{"name":"DEFAULT_WORKSPACE","value":"/config"},{"name":"PASSWORD","value":""}]` | Environment variables for code-server. Runs as the same PUID/PGID as Home Assistant so it has full read/write access to `/config`. |
 | addons.codeserver.image | object | `{"repository":"lscr.io/linuxserver/code-server","tag":""}` | code-server container image (LSIO build). |
 | addons.codeserver.image.tag | string | `""` | Image tag. Defaults to `Chart.appVersion` when empty. |
+| addons.codeserver.ingress | object | `{"annotations":{},"className":"","enabled":false,"hostname":"","tls":[]}` | Standard Kubernetes Ingress for code-server. Use when a Gateway API HTTPRoute is not available. |
+| addons.codeserver.ingress.annotations | object | `{}` | Annotations merged onto the Ingress resource. |
+| addons.codeserver.ingress.className | string | `""` | IngressClass name (e.g. `nginx`, `traefik`). |
+| addons.codeserver.ingress.enabled | bool | `false` | Enable Ingress rendering for code-server. |
+| addons.codeserver.ingress.hostname | string | `""` | Hostname for the code-server Ingress rule. |
+| addons.codeserver.ingress.tls | list | `[]` | TLS configuration. |
 | addons.codeserver.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"50m","memory":"128Mi"}}` | Resource requests and limits for the code-server container. |
 | addons.codeserver.service | object | `{"port":12321,"type":"ClusterIP"}` | Service for code-server. Use `ClusterIP` and protect with an Authentik outpost. |
 | dnsPolicy | string | `"ClusterFirstWithHostNet"` | DNS policy for the pod. Should be `ClusterFirstWithHostNet` when `hostNetwork` is enabled. |
@@ -221,10 +227,19 @@ networkPolicy:
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | image.repository | string | `"lscr.io/linuxserver/homeassistant"` | Image repository. |
 | image.tag | string | `""` | Image tag. Defaults to `Chart.appVersion` when empty. |
+| ingress | object | `{"annotations":{},"className":"","enabled":false,"hostname":"","tls":[]}` | Standard Kubernetes Ingress resource. Use when a Gateway API HTTPRoute is not available. |
+| ingress.annotations | object | `{}` | Annotations merged onto the Ingress resource. |
+| ingress.className | string | `""` | IngressClass name (e.g. `nginx`, `traefik`). |
+| ingress.enabled | bool | `false` | Enable Ingress rendering. |
+| ingress.hostname | string | `""` | Hostname for the Ingress rule. |
+| ingress.tls | list | `[]` | TLS configuration. |
 | nameOverride | string | `""` | Override the chart name used in resource names and labels. |
 | namespaceLabels | object | `{}` | Extra labels merged onto the Namespace created by this chart. Useful for gateway selectors or additional PSS annotations. The Pod Security Standards labels are managed automatically — no need to add them here. |
-| networkPolicy | object | `{"enabled":false,"mqttNamespace":"","postgresNamespace":"","prometheusNamespace":""}` | CiliumNetworkPolicy configuration. Requires [Cilium CNI](https://cilium.io). |
-| networkPolicy.enabled | bool | `false` | Enable CiliumNetworkPolicy rendering. |
+| networkPolicy | object | `{"cilium":{"enabled":false},"extraEgress":[],"extraIngress":[],"kubernetes":{"enabled":false},"mqttNamespace":"","postgresNamespace":"","prometheusNamespace":""}` | NetworkPolicy configuration. |
+| networkPolicy.cilium.enabled | bool | `false` | Enable CiliumNetworkPolicy rendering. Requires [Cilium CNI](https://cilium.io). |
+| networkPolicy.extraEgress | list | `[]` | Extra egress rules appended to the NetworkPolicy (both Cilium and Kubernetes). |
+| networkPolicy.extraIngress | list | `[]` | Extra ingress rules appended to the NetworkPolicy (both Cilium and Kubernetes). |
+| networkPolicy.kubernetes.enabled | bool | `false` | Enable standard Kubernetes NetworkPolicy rendering. Works with any CNI that supports NetworkPolicy. |
 | networkPolicy.mqttNamespace | string | `""` | Namespace of the MQTT broker (e.g. EMQX). When set, adds an egress rule on port 1883. |
 | networkPolicy.postgresNamespace | string | `""` | Namespace of the PostgreSQL cluster. When set, adds an egress rule on port 5432. |
 | networkPolicy.prometheusNamespace | string | `""` | Namespace where Prometheus runs. When set, adds an ingress rule allowing Prometheus scraping on port 8123. |
