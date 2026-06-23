@@ -161,26 +161,80 @@ httproutes:
     port: 8123
 ```
 
-### Cilium NetworkPolicy (`networkPolicy`)
+### Ingress (`ingress`)
+
+Standard Kubernetes `Ingress` resource for clusters without Gateway API. Works with any ingress
+controller (nginx, Traefik, HAProxy, …).
+
+```yaml
+ingress:
+  enabled: true
+  className: nginx
+  hostname: ha.example.com
+  tls:
+  - hosts:
+    - ha.example.com
+    secretName: home-assistant-tls
+```
+
+An optional second Ingress for code-server is available via `addons.codeserver.ingress`:
+
+```yaml
+addons:
+  codeserver:
+    ingress:
+      enabled: true
+      className: nginx
+      hostname: codeserver.example.com
+```
+
+### Cilium NetworkPolicy (`networkPolicy.cilium`)
 
 Optional `CiliumNetworkPolicy` that locks down pod traffic to only what Home Assistant actually needs.
 Requires [Cilium CNI](https://cilium.io).
 
 ```yaml
 networkPolicy:
-  enabled: true
+  cilium:
+    enabled: true
   prometheusNamespace: monitoring   # allow Prometheus scraping
   mqttNamespace: emqx               # allow MQTT broker egress
   postgresNamespace: cnpg-system    # allow PostgreSQL egress (HA recorder)
+  extraIngress: []                  # append custom ingress rules
+  extraEgress: []                   # append custom egress rules
 ```
+
+### Kubernetes NetworkPolicy (`networkPolicy.kubernetes`)
+
+Standard `NetworkPolicy` for clusters without Cilium. Works with any CNI that supports NetworkPolicy
+(Calico, Flannel, Weave, …). Controls ingress only; use `extraEgress` to add egress rules.
+
+```yaml
+networkPolicy:
+  kubernetes:
+    enabled: true
+  prometheusNamespace: monitoring
+  extraEgress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: my-db
+    ports:
+    - port: 5432
+```
+
+Both `networkPolicy.cilium` and `networkPolicy.kubernetes` share the same namespace fields and
+`extraIngress`/`extraEgress` lists — enable one or the other, not both.
 
 ## Prerequisites summary
 
 | Feature | Cluster requirement |
 |---------|-------------------|
 | `externalSecrets.enabled` | [External Secrets Operator](https://external-secrets.io) |
+| `ingress.enabled` | Any Kubernetes ingress controller |
 | `httproutes` | [Gateway API CRDs](https://gateway-api.sigs.k8s.io) |
-| `networkPolicy.enabled` | [Cilium CNI](https://cilium.io) |
+| `networkPolicy.cilium.enabled` | [Cilium CNI](https://cilium.io) |
+| `networkPolicy.kubernetes.enabled` | Any CNI with NetworkPolicy support |
 | `addons.codeserver.authentikOutpost.enabled` | [Authentik](https://goauthentik.io) |
 | `hostNetwork: true` | Namespace PSS `privileged` (set automatically by this chart) |
 
