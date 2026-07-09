@@ -28,5 +28,7 @@ annotations:
     - name: Source
       url: https://github.com/sironite/helm-home-assistant
   artifacthub.io/changes: |
-    - kind: added
-      description: Initial release
+    - kind: changed
+      description: Update homeassistant to v2026.7.1
+    - kind: changed
+      description: Update goauthentik/proxy to v2026.5.4
