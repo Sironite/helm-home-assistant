@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v2.0.1...home-assistant-v2.0.2) (2026-07-09)
+
+
+### Bug Fixes
+
+* update artifacthub.io/changes for 2026.7.1 and goauthentik 2026.5.4 ([fcaa2b0](https://github.com/Sironite/helm-home-assistant/commit/fcaa2b0d3f7a73409304fce1a3769e152adc9409))
+
 ## [2.0.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v2.0.0...home-assistant-v2.0.1) (2026-06-23)
 
 
