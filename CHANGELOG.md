@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v2.0.2...home-assistant-v2.1.0) (2026-07-12)
+
+
+### Features
+
+* support mountPath on any externalSecrets item, not only coderOnly ([dfcb01d](https://github.com/Sironite/helm-home-assistant/commit/dfcb01d29cb92942cf2bcd18aefd5dac8a2a3e62))
+
 ## [2.0.2](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v2.0.1...home-assistant-v2.0.2) (2026-07-09)
 
 
