@@ -1,0 +1,49 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+annotations:
+  artifacthub.io/category: integration-delivery
+  artifacthub.io/changes: |
+    - kind: changed
+      description: Update homeassistant to v2026.7.2
+    - kind: added
+      description: Support mountPath on any externalSecrets item to copy the secret onto the config PVC via initContainer, not only coderOnly items
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/links: |
+    - name: Home Assistant
+      url: https://www.home-assistant.io
+    - name: Source
+      url: https://github.com/sironite/helm-home-assistant
+  artifacthub.io/prerelease: "false"
+apiVersion: v2
+appVersion: 2026.7.2
+description: Home Assistant on Kubernetes with optional code-server addon and Authentik
+  outpost
+home: https://www.home-assistant.io
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/home-assistant.png
+keywords:
+- - home-assistant
+- - smart-home
+- - iot
+- - automation
+maintainers:
+- - name: sironite
+  url: https://github.com/sironite
+name: home-assistant
+sources:
+- - https://github.com/home-assistant/core
+- - https://github.com/sironite/helm-home-assistant
+type: application
+version: 2.1.0
+
+...
+files:
+  home-assistant-2.1.0.tgz: sha256:b9ee059739cee603c486b0b16956abbd19ff27b39f64fd679bd26fa0898b82b6
+
+-----BEGIN PGP SIGNATURE-----
+
+wrsEARYKAG0FgmpT5O0JEJGS1fu6+TAiRRQAAAAAABwAIHNhbHRAbm90YXRpb25z
+Lm9wZW5wZ3Bqcy5vcmeFk2eoWOZVh7tvmwn1/mvcbilYEh3zrDTcGnwcavNO8BYh
+BNxo1ll5fY7SMucbq5GS1fu6+TAiAAAytgD/SsDaTpGG0FlNw9JXtDDU+9qFsYKW
+Tany7lGeiITnOsgBANMrybZo8k/mYzWCDvsj2vBMlTRm30fOEZpz8TisBA4E
+-----END PGP SIGNATURE-----
