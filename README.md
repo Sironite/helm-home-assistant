@@ -1,7 +1,7 @@
 # home-assistant
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/helm-home-assistant)](https://artifacthub.io/packages/search?repo=helm-home-assistant)
-[![Version: 2.0.2](https://img.shields.io/badge/Version-2.0.2-informational?style=flat-square)](https://github.com/Sironite/helm-home-assistant/releases/tag/home-assistant-v2.0.2) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) [![AppVersion: 2026.7.1](https://img.shields.io/badge/AppVersion-2026.7.1-informational?style=flat-square)](https://github.com/home-assistant/core/releases/tag/2026.7.1)
+[![Version: 2.0.2](https://img.shields.io/badge/Version-2.0.2-informational?style=flat-square)](https://github.com/Sironite/helm-home-assistant/releases/tag/home-assistant-v2.0.2) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) [![AppVersion: 2026.7.2](https://img.shields.io/badge/AppVersion-2026.7.2-informational?style=flat-square)](https://github.com/home-assistant/core/releases/tag/2026.7.2)
 
 Home Assistant on Kubernetes with optional code-server addon and Authentik outpost
 

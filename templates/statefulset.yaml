@@ -27,30 +27,33 @@ spec:
         seccompProfile:
           type: RuntimeDefault
 
-      {{- if and .Values.addons.codeserver.enabled .Values.externalSecrets.enabled }}
-      {{- $hasSSHSecret := false }}
+      {{- if .Values.externalSecrets.enabled }}
+      {{- $hasMountPath := false }}
       {{- range .Values.externalSecrets.items }}
-      {{- if .coderOnly }}
-      {{- $hasSSHSecret = true }}
+      {{- if .mountPath }}
+      {{- $hasMountPath = true }}
       {{- end }}
       {{- end }}
-      {{- if $hasSSHSecret }}
+      {{- if $hasMountPath }}
       initContainers:
-      - name: fix-ssh-key-permissions
+      - name: fix-secret-permissions
         image: busybox:1.37
         command:
         - sh
         - -c
         - |
-          mkdir -p /config/.ssh
-          cp /mnt/ssh-key/id_ed25519 /config/.ssh/id_ed25519
-          chown 1000:1000 /config/.ssh/id_ed25519
-          chmod 600 /config/.ssh/id_ed25519
+          {{- range .Values.externalSecrets.items }}
+          {{- if .mountPath }}
+          mkdir -p $(dirname /config/{{ .secretKey }})
+          cp {{ .mountPath }} /config/{{ .secretKey }}
+          chown 1000:1000 /config/{{ .secretKey }}
+          {{- end }}
+          {{- end }}
         volumeMounts:
         - name: config
           mountPath: /config
         {{- range .Values.externalSecrets.items }}
-        {{- if .coderOnly }}
+        {{- if .mountPath }}
         - name: {{ .name }}
           mountPath: {{ .mountPath }}
           subPath: {{ .secretKey }}
@@ -82,10 +85,12 @@ spec:
         {{- if .Values.externalSecrets.enabled }}
         {{- range .Values.externalSecrets.items }}
         {{- if not .coderOnly }}
+        {{- if not .mountPath }}
         - name: {{ .name }}
           mountPath: /config/{{ .secretKey }}
           subPath: {{ .secretKey }}
           readOnly: true
+        {{- end }}
         {{- end }}
         {{- end }}
         {{- end }}

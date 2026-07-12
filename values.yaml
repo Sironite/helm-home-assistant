@@ -130,6 +130,9 @@ externalSecrets:
   #   secretKey: id_ed25519
   #   # coderOnly: true mounts this secret only in code-server, not in Home Assistant.
   #   coderOnly: true
+  #   # mountPath (on any item, coderOnly or not) has an initContainer copy the secret onto the
+  #   # config PVC at /config/<secretKey> with chown 1000:1000, instead of mounting it read-only
+  #   # directly into /config. Needed when the LSIO chown of /config requires a writable file.
   #   mountPath: /mnt/ssh-key/id_ed25519
   #   defaultMode: 0600
 
