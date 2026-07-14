@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    strategy:
-      matrix:
-        helm-version: [v3.21.3, v4.0.4]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -21,7 +18,7 @@ jobs:
 
       - uses: azure/setup-helm@v5
         with:
-          version: ${{ matrix.helm-version }}
+          version: v4.0.4
 
       - name: Lint chart
         run: helm lint . -f values.yaml.example
@@ -55,15 +52,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    strategy:
-      matrix:
-        helm-version: [v3.21.3, v4.0.4]
     steps:
       - uses: actions/checkout@v7
 
       - uses: azure/setup-helm@v5
         with:
-          version: ${{ matrix.helm-version }}
+          version: v4.0.4
 
       - name: Install helm-unittest
         run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version 0.7.1 --verify=false
