@@ -17,44 +17,6 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2026.7.2
-    created: "2026-07-14T08:02:21.569359405Z"
-    description: Home Assistant on Kubernetes with optional code-server addon and
-      Authentik outpost
-    digest: c08d646e31bc2c5d0e604a939601e7da3f84112f1bf95a127ecb05ff43c452a3
-    home: https://www.home-assistant.io
-    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/home-assistant.png
-    keywords:
-    - home-assistant
-    - smart-home
-    - iot
-    - automation
-    maintainers:
-    - name: sironite
-      url: https://github.com/sironite
-    name: home-assistant
-    sources:
-    - https://github.com/home-assistant/core
-    - https://github.com/sironite/helm-home-assistant
-    type: application
-    urls:
-    - https://sironite.github.io/helm-home-assistant/home-assistant-2.1.1-helmv4test.tgz
-    version: 2.1.1-helmv4test
-  - annotations:
-      artifacthub.io/category: integration-delivery
-      artifacthub.io/changes: |
-        - kind: changed
-          description: Update homeassistant to v2026.7.2
-        - kind: added
-          description: Support mountPath on any externalSecrets item to copy the secret onto the config PVC via initContainer, not only coderOnly items
-      artifacthub.io/license: Apache-2.0
-      artifacthub.io/links: |
-        - name: Home Assistant
-          url: https://www.home-assistant.io
-        - name: Source
-          url: https://github.com/sironite/helm-home-assistant
-      artifacthub.io/prerelease: "false"
-    apiVersion: v2
-    appVersion: 2026.7.2
     created: "2026-07-14T08:02:21.568155211Z"
     description: Home Assistant on Kubernetes with optional code-server addon and
       Authentik outpost
