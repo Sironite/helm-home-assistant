@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.0.0...home-assistant-v3.0.1) (2026-07-14)
+
+
+### Bug Fixes
+
+* reapply Helm v3/v4 CI matrix and version pins ([32c96ff](https://github.com/Sironite/helm-home-assistant/commit/32c96ff30b1d772a1ee5ae59045c1e8d788170f2))
+
 ## [3.0.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v2.1.0...home-assistant-v3.0.0) (2026-07-14)
 
 
