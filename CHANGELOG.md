@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v2.1.0...home-assistant-v3.0.0) (2026-07-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* CI now matrix-tests lint/unit-tests against Helm v3.21.3 and v4.0.4. Release workflows (release-please.yml, release.yaml) pinned to Helm v4.0.4 for packaging/signing/publish. helm-unittest plugin install made conditional on Helm major version (--verify flag only exists on v4). release.yaml guarded against dispatch from non-main refs.
+
+### Features
+
+* verify chart compat with Helm v3 and v4 in CI/release pipeline ([571f337](https://github.com/Sironite/helm-home-assistant/commit/571f3371851e3ce8a98547e0ccecfc30dbe79d13))
+
 ## [2.1.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v2.0.2...home-assistant-v2.1.0) (2026-07-12)
 
 
