@@ -66,7 +66,12 @@ jobs:
           version: ${{ matrix.helm-version }}
 
       - name: Install helm-unittest
-        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version 0.7.1 --verify=false
+        run: |
+          if [[ "${{ matrix.helm-version }}" == v4* ]]; then
+            helm plugin install https://github.com/helm-unittest/helm-unittest.git --version 0.7.1 --verify=false
+          else
+            helm plugin install https://github.com/helm-unittest/helm-unittest.git --version 0.7.1
+          fi
 
       - name: Run unit tests
         run: helm unittest -f 'tests/units/*_test.yaml' .
