@@ -245,7 +245,7 @@ addons:
       # -- Authentik proxy image.
       image:
         repository: ghcr.io/goauthentik/proxy
-        tag: "2026.5.4"
+        tag: "2026.5.6"
       # -- Cluster-internal URL of the Authentik server (used by the outpost to validate sessions).
       authentikHost: ""
       # -- Public-facing Authentik URL (used for browser redirects to the login page).
