@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.0.1...home-assistant-v3.1.0) (2026-08-02)
+
+
+### Features
+
+* make liveness/readiness probes configurable via values.yaml ([c781483](https://github.com/Sironite/helm-home-assistant/commit/c7814833c4743a65493e6c6d13075cce53ecaf81))
+
 ## [3.0.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.0.0...home-assistant-v3.0.1) (2026-07-14)
 
 
