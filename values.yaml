@@ -57,6 +57,20 @@ resources:
     cpu: "2"
     memory: 2Gi
 
+# -- Liveness probe for the Home Assistant container.
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+# -- Readiness probe for the Home Assistant container.
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
 # -- Extra labels merged onto the Namespace created by this chart.
 # Useful for gateway selectors or additional PSS annotations.
 # The Pod Security Standards labels are managed automatically — no need to add them here.

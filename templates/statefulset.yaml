@@ -102,18 +102,12 @@ spec:
           httpGet:
             path: /
             port: http
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 10
-          failureThreshold: 3
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /
             port: http
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
 
       {{- if .Values.addons.codeserver.enabled }}
       - name: codeserver

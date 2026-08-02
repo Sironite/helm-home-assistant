@@ -281,6 +281,24 @@
                 }
             }
         },
+        "livenessProbe": {
+            "description": "Liveness probe for the Home Assistant container.",
+            "type": "object",
+            "properties": {
+                "failureThreshold": {
+                    "type": "integer"
+                },
+                "initialDelaySeconds": {
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "type": "integer"
+                },
+                "timeoutSeconds": {
+                    "type": "integer"
+                }
+            }
+        },
         "nameOverride": {
             "description": "Override the chart name used in resource names and labels.",
             "type": "string"
@@ -348,6 +366,24 @@
                 "storageClassName": {
                     "description": "StorageClass name. Defaults to the cluster default when empty.",
                     "type": "string"
+                }
+            }
+        },
+        "readinessProbe": {
+            "description": "Readiness probe for the Home Assistant container.",
+            "type": "object",
+            "properties": {
+                "failureThreshold": {
+                    "type": "integer"
+                },
+                "initialDelaySeconds": {
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "type": "integer"
+                },
+                "timeoutSeconds": {
+                    "type": "integer"
                 }
             }
         },
