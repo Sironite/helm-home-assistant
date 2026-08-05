@@ -4,7 +4,7 @@ description: Home Assistant on Kubernetes with optional code-server addon and
   Authentik outpost
 type: application
 version: 3.1.0
-appVersion: "2026.7.4"
+appVersion: "2026.8.0"
 keywords:
   - home-assistant
   - smart-home
