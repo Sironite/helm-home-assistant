@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.2.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.1.0...home-assistant-v3.2.0) (2026-08-06)
+
+
+### Bug Fixes
+
+* mount coder-only secrets straight to destination, skip config staging ([0a04049](https://github.com/Sironite/helm-home-assistant/commit/0a0404937a0329fdc94f9c1b1962a31a9a17846d))
+* sync Chart.yaml version to release, guard against future drift in CI ([73008e2](https://github.com/Sironite/helm-home-assistant/commit/73008e23bf8e5ce0e716d85894544f43c6148e60))
+
+
+### Documentation
+
+* update artifacthub changelog annotation for 3.2.0 ([6330339](https://github.com/Sironite/helm-home-assistant/commit/63303394e57670d00b1468d7c92baad2ed341aef))
+
+
+### Miscellaneous Chores
+
+* release home-assistant as 3.2.0 ([3c7c9d4](https://github.com/Sironite/helm-home-assistant/commit/3c7c9d42f2c2619af78bd934f715190f552db811))
+
 ## [3.1.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.0.1...home-assistant-v3.1.0) (2026-08-02)
 
 
