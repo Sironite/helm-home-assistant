@@ -29,6 +29,8 @@ annotations:
       url: https://github.com/sironite/helm-home-assistant
   artifacthub.io/changes: |
     - kind: changed
-      description: Update homeassistant to v2026.7.2
-    - kind: added
-      description: Support mountPath on any externalSecrets item to copy the secret onto the config PVC via initContainer, not only coderOnly items
+      description: Update homeassistant to v2026.8.0
+    - kind: fixed
+      description: Mount coder-only secrets straight to destination, skip config staging
+    - kind: fixed
+      description: CI now syncs Chart.yaml version to the release version before packaging, preventing tag/version drift
