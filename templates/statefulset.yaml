@@ -30,7 +30,7 @@ spec:
       {{- if .Values.externalSecrets.enabled }}
       {{- $hasMountPath := false }}
       {{- range .Values.externalSecrets.items }}
-      {{- if .mountPath }}
+      {{- if and .mountPath (not .coderOnly) }}
       {{- $hasMountPath = true }}
       {{- end }}
       {{- end }}
@@ -43,7 +43,7 @@ spec:
         - -c
         - |
           {{- range .Values.externalSecrets.items }}
-          {{- if .mountPath }}
+          {{- if and .mountPath (not .coderOnly) }}
           mkdir -p $(dirname /config/{{ .secretKey }})
           cp {{ .mountPath }} /config/{{ .secretKey }}
           chown 1000:1000 /config/{{ .secretKey }}
@@ -53,7 +53,7 @@ spec:
         - name: config
           mountPath: /config
         {{- range .Values.externalSecrets.items }}
-        {{- if .mountPath }}
+        {{- if and .mountPath (not .coderOnly) }}
         - name: {{ .name }}
           mountPath: {{ .mountPath }}
           subPath: {{ .secretKey }}
@@ -137,7 +137,7 @@ spec:
         {{- end }}
         {{- if .Values.sshKnownHosts.enabled }}
         - name: ssh-known-hosts
-          mountPath: /config/.ssh/known_hosts
+          mountPath: /home/coder/.ssh/known_hosts
           subPath: known_hosts
           readOnly: true
         {{- end }}

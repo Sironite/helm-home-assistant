@@ -144,15 +144,21 @@ externalSecrets:
   #   secretKey: id_ed25519
   #   # coderOnly: true mounts this secret only in code-server, not in Home Assistant.
   #   coderOnly: true
-  #   # mountPath (on any item, coderOnly or not) has an initContainer copy the secret onto the
-  #   # config PVC at /config/<secretKey> with chown 1000:1000, instead of mounting it read-only
-  #   # directly into /config. Needed when the LSIO chown of /config requires a writable file.
-  #   mountPath: /mnt/ssh-key/id_ed25519
+  #   # mountPath is the final mount destination in code-server. For coderOnly items it is
+  #   # mounted read-only straight there — no /config staging, no initContainer copy — since
+  #   # /home/coder does not have the LSIO chown requirement that /config has.
+  #   # (For non-coderOnly items, mountPath instead triggers an initContainer that copies the
+  #   # secret onto the config PVC at /config/<secretKey> with chown 1000:1000, needed when the
+  #   # LSIO chown of /config requires a writable file.)
+  #   mountPath: /home/coder/.ssh/id_ed25519
   #   defaultMode: 0600
 
 # -- SSH `known_hosts` entries pre-loaded into code-server for authenticated git operations.
 # Without this, the first `git push/pull` to a new host blocks on an interactive host-key prompt,
 # which is not possible inside a browser-based editor. Add one line per host.
+# Mounted at /home/coder/.ssh/known_hosts (code-server's $HOME has no persistent volume — only
+# /config does — so this and the SSH key above must be re-supplied via Secret/ConfigMap mount
+# on every pod restart, not written by hand).
 sshKnownHosts:
   # -- Enable the known_hosts ConfigMap and mount it into code-server.
   enabled: false

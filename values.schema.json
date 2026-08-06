@@ -434,7 +434,7 @@
             }
         },
         "sshKnownHosts": {
-            "description": "SSH `known_hosts` entries pre-loaded into code-server for authenticated git operations. Without this, the first `git push/pull` to a new host blocks on an interactive host-key prompt, which is not possible inside a browser-based editor. Add one line per host.",
+            "description": "SSH `known_hosts` entries pre-loaded into code-server for authenticated git operations. Without this, the first `git push/pull` to a new host blocks on an interactive host-key prompt, which is not possible inside a browser-based editor. Add one line per host. Mounted at /home/coder/.ssh/known_hosts (code-server's $HOME has no persistent volume — only /config does — so this and the SSH key above must be re-supplied via Secret/ConfigMap mount on every pod restart, not written by hand).",
             "type": "object",
             "properties": {
                 "content": {

@@ -308,7 +308,7 @@ Both `networkPolicy.cilium` and `networkPolicy.kubernetes` share the same namesp
 | service.annotations | object | `{}` | Annotations merged onto the Service resource. |
 | service.port | int | `8123` | Port to expose. |
 | service.type | string | `"ClusterIP"` | Service type. Use `LoadBalancer` to expose HA directly on the LAN. |
-| sshKnownHosts | object | `{"content":"","enabled":false}` | SSH `known_hosts` entries pre-loaded into code-server for authenticated git operations. Without this, the first `git push/pull` to a new host blocks on an interactive host-key prompt, which is not possible inside a browser-based editor. Add one line per host. |
+| sshKnownHosts | object | `{"content":"","enabled":false}` | SSH `known_hosts` entries pre-loaded into code-server for authenticated git operations. Without this, the first `git push/pull` to a new host blocks on an interactive host-key prompt, which is not possible inside a browser-based editor. Add one line per host. Mounted at /home/coder/.ssh/known_hosts (code-server's $HOME has no persistent volume — only /config does — so this and the SSH key above must be re-supplied via Secret/ConfigMap mount on every pod restart, not written by hand). |
 | sshKnownHosts.content | string | `""` | Raw known_hosts content (one entry per line). Get entries with: `ssh-keyscan github.com` |
 | sshKnownHosts.enabled | bool | `false` | Enable the known_hosts ConfigMap and mount it into code-server. |
 

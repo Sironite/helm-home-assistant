@@ -69,7 +69,7 @@ externalSecrets:
     remoteProperty: private_key
     secretKey: id_ed25519
     coderOnly: true
-    mountPath: /mnt/ssh-key/id_ed25519
+    mountPath: /home/coder/.ssh/id_ed25519
     defaultMode: 0600
 
 sshKnownHosts:
