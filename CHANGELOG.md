@@ -1,12 +1,5 @@
 # Changelog
 
-## [3.1.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.1.0...home-assistant-v3.1.1) (2026-08-06)
-
-
-### Bug Fixes
-
-* mount coder-only secrets straight to destination, skip config staging ([0a04049](https://github.com/Sironite/helm-home-assistant/commit/0a0404937a0329fdc94f9c1b1962a31a9a17846d))
-
 ## [3.1.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.0.1...home-assistant-v3.1.0) (2026-08-02)
 
 
