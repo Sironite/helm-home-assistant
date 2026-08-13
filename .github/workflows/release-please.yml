@@ -35,7 +35,7 @@ jobs:
 
       - uses: azure/setup-helm@v5
         with:
-          version: v4.2.3
+          version: v4.2.4
 
       - name: Ensure Chart.yaml version matches release
         run: |
