@@ -14,7 +14,4 @@ metadata:
   {{- $_ := set $pssLabels "pod-security.kubernetes.io/enforce" "privileged" }}
   {{- end }}
   labels:
-    {{- toYaml $pssLabels | nindent 4 }}
-    {{- with .Values.namespaceLabels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- toYaml (mergeOverwrite $pssLabels (.Values.namespaceLabels | default dict)) | nindent 4 }}
