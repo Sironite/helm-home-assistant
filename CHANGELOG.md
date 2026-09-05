@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.2.0...home-assistant-v3.2.1) (2026-09-05)
+
+
+### Bug Fixes
+
+* merge namespaceLabels into PSS labels instead of duplicating keys ([940bdc3](https://github.com/Sironite/helm-home-assistant/commit/940bdc3c4fad6beb45144c2ad9e77dce6acbf6bf))
+
 ## [3.2.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.1.0...home-assistant-v3.2.0) (2026-08-06)
 
 
