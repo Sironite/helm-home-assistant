@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.2](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.2.1...home-assistant-v3.2.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **deps:** update homeassistant to v2026.10.1 ([9e70146](https://github.com/Sironite/helm-home-assistant/commit/9e70146be01c3417c1697b940c730d9a674c8fae))
+
 ## [3.2.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.2.0...home-assistant-v3.2.1) (2026-09-05)
 
 
