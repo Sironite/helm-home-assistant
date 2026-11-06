@@ -299,7 +299,7 @@ addons:
     enabled: false
     # -- Matter Server container image.
     image:
-      repository: ghcr.io/home-assistant-libs/python-matter-server
+      repository: ghcr.io/matter-js/python-matter-server
       # -- Image tag (independent of `Chart.appVersion`).
       tag: "8.1.2"
     # -- Port of the websocket server (the Matter integration connects to `ws://<host>:<port>/ws`).
