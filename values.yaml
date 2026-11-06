@@ -289,3 +289,35 @@ addons:
         limits:
           cpu: 200m
           memory: 256Mi
+
+  # -- Matter Server ([python-matter-server](https://github.com/home-assistant-libs/python-matter-server))
+  # as sidecar. Home Assistant Container has no add-on store, so the Matter integration needs this
+  # server next to it. With `hostNetwork: true` the integration URL is `ws://localhost:5580/ws`.
+  # Matter needs mDNS and IPv6 on the LAN, so `hostNetwork` is effectively required.
+  matterServer:
+    # -- Enable the Matter Server sidecar.
+    enabled: false
+    # -- Matter Server container image.
+    image:
+      repository: ghcr.io/home-assistant-libs/python-matter-server
+      # -- Image tag (independent of `Chart.appVersion`).
+      tag: "8.1.2"
+    # -- Port of the websocket server (the Matter integration connects to `ws://<host>:<port>/ws`).
+    port: 5580
+    # -- Subdirectory of the `/config` volume used for fabric and credential storage.
+    # Losing it means re-commissioning every Matter device. Keep it out of git.
+    dataSubPath: matter-server
+    # -- Extra arguments for the Matter Server (e.g. `--log-level`, `--primary-interface`).
+    args: []
+    # -- Environment variables for the Matter Server.
+    env:
+    - name: TZ
+      value: UTC
+    # -- Resource requests and limits for the Matter Server container.
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

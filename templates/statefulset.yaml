@@ -147,6 +147,43 @@ spec:
         {{- end }}
       {{- end }}
 
+      {{- if .Values.addons.matterServer.enabled }}
+      # Matter Server — Home Assistant Container has no add-on store. Shares the pod network, so with
+      # hostNetwork the Matter integration URL is ws://localhost:<port>/ws.
+      - name: matter-server
+        image: "{{ .Values.addons.matterServer.image.repository }}:{{ .Values.addons.matterServer.image.tag }}"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+        args:
+        - --storage-path
+        - /data
+        - --paa-root-cert-dir
+        - /data/credentials
+        - --port
+        - {{ .Values.addons.matterServer.port | quote }}
+        {{- with .Values.addons.matterServer.args }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.addons.matterServer.env }}
+        env:
+        {{- toYaml .Values.addons.matterServer.env | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: matter
+          containerPort: {{ .Values.addons.matterServer.port }}
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /data
+          subPath: {{ .Values.addons.matterServer.dataSubPath }}
+        {{- if .Values.addons.matterServer.resources }}
+        resources:
+          {{- toYaml .Values.addons.matterServer.resources | nindent 10 }}
+        {{- end }}
+      {{- end }}
+
       volumes:
       {{- if .Values.externalSecrets.enabled }}
       {{- range .Values.externalSecrets.items }}

@@ -189,6 +189,49 @@
                             }
                         }
                     }
+                },
+                "matterServer": {
+                    "description": "Matter Server (python-matter-server) as sidecar for the Matter integration. With `hostNetwork: true` the integration URL is `ws://localhost:5580/ws`.",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "description": "Enable the Matter Server sidecar.",
+                            "type": "boolean"
+                        },
+                        "image": {
+                            "description": "Matter Server container image.",
+                            "type": "object",
+                            "properties": {
+                                "repository": {
+                                    "type": "string"
+                                },
+                                "tag": {
+                                    "description": "Image tag.",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "port": {
+                            "description": "Port of the websocket server.",
+                            "type": "integer"
+                        },
+                        "dataSubPath": {
+                            "description": "Subdirectory of the `/config` volume used for fabric and credential storage.",
+                            "type": "string"
+                        },
+                        "args": {
+                            "description": "Extra arguments for the Matter Server.",
+                            "type": "array"
+                        },
+                        "env": {
+                            "description": "Environment variables for the Matter Server.",
+                            "type": "array"
+                        },
+                        "resources": {
+                            "description": "Resource requests and limits for the Matter Server container.",
+                            "type": "object"
+                        }
+                    }
                 }
             }
         },
