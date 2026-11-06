@@ -150,3 +150,20 @@ addons:
         limits:
           cpu: 200m
           memory: 256Mi
+  matterServer:
+    enabled: true
+    image:
+      repository: ghcr.io/home-assistant-libs/python-matter-server
+      tag: "8.1.2"
+    port: 5580
+    dataSubPath: matter-server
+    env:
+    - name: TZ
+      value: Europe/Amsterdam
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

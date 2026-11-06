@@ -64,6 +64,29 @@ tests:
           path: spec.template.spec.containers[1].ports[0].containerPort
           value: 8443
 
+  - it: adds no matter-server container by default
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers
+          content:
+            name: matter-server
+          any: true
+
+  - it: adds matter-server sidecar on /config subPath when addon enabled
+    set:
+      addons.matterServer.enabled: true
+      addons.matterServer.dataSubPath: matter
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].name
+          value: matter-server
+      - equal:
+          path: spec.template.spec.containers[1].ports[0].containerPort
+          value: 5580
+      - equal:
+          path: spec.template.spec.containers[1].volumeMounts[0].subPath
+          value: matter
+
   - it: uses custom storageClassName when set
     set:
       persistence.storageClassName: longhorn-fast
