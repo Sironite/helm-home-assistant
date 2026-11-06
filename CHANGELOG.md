@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.3.0...home-assistant-v3.3.1) (2026-11-06)
+
+
+### Bug Fixes
+
+* **addons:** Matter Server image from ghcr.io/matter-js ([#50](https://github.com/Sironite/helm-home-assistant/issues/50)) ([8ed49a1](https://github.com/Sironite/helm-home-assistant/commit/8ed49a18fd81f8a95d8cc494238b5fc757a9f1c2))
+
 ## [3.3.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.2.2...home-assistant-v3.3.0) (2026-11-06)
 
 
