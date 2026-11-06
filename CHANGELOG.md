@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.3.0](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.2.2...home-assistant-v3.3.0) (2026-11-06)
+
+
+### Features
+
+* **addons:** optional Matter Server sidecar ([#48](https://github.com/Sironite/helm-home-assistant/issues/48)) ([42b8e8b](https://github.com/Sironite/helm-home-assistant/commit/42b8e8b723ea68c3ebed70a1f833bf9c885180d0))
+
+
+### Bug Fixes
+
+* **deps:** update lscr.io/linuxserver/homeassistant docker tag to v2026.11.0 ([#47](https://github.com/Sironite/helm-home-assistant/issues/47)) ([a16878b](https://github.com/Sironite/helm-home-assistant/commit/a16878b1996662ab7a4c71bbe680c55962ee77eb))
+
 ## [3.2.2](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.2.1...home-assistant-v3.2.2) (2026-10-13)
 
 
