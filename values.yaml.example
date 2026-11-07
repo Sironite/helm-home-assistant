@@ -157,6 +157,9 @@ addons:
       tag: "8.1.2"
     port: 5580
     dataSubPath: matter-server
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     env:
     - name: TZ
       value: Europe/Amsterdam
