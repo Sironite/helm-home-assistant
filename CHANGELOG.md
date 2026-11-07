@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.2](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.3.1...home-assistant-v3.3.2) (2026-11-07)
+
+
+### Bug Fixes
+
+* **addons:** configurable securityContext for the Matter Server sidecar ([#52](https://github.com/Sironite/helm-home-assistant/issues/52)) ([af5a65c](https://github.com/Sironite/helm-home-assistant/commit/af5a65cec00c737690285fa809eb5897ee4b8b6b))
+
 ## [3.3.1](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.3.0...home-assistant-v3.3.1) (2026-11-06)
 
 
