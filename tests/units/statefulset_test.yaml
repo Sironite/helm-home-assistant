@@ -87,6 +87,20 @@ tests:
           path: spec.template.spec.containers[1].volumeMounts[0].subPath
           value: matter
 
+  - it: sets matter-server securityContext user when configured
+    set:
+      addons.matterServer.enabled: true
+      addons.matterServer.securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].securityContext.runAsUser
+          value: 1000
+      - equal:
+          path: spec.template.spec.containers[1].securityContext.seccompProfile.type
+          value: RuntimeDefault
+
   - it: uses custom storageClassName when set
     set:
       persistence.storageClassName: longhorn-fast

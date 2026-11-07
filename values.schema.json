@@ -230,6 +230,10 @@
                         "resources": {
                             "description": "Resource requests and limits for the Matter Server container.",
                             "type": "object"
+                        },
+                        "securityContext": {
+                            "description": "Extra container securityContext fields for the Matter Server, merged next to the default seccomp profile.",
+                            "type": "object"
                         }
                     }
                 }

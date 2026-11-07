@@ -156,6 +156,9 @@ spec:
         securityContext:
           seccompProfile:
             type: RuntimeDefault
+          {{- with .Values.addons.matterServer.securityContext }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
         args:
         - --storage-path
         - /data

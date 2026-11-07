@@ -309,6 +309,13 @@ addons:
     dataSubPath: matter-server
     # -- Extra arguments for the Matter Server (e.g. `--log-level`, `--primary-interface`).
     args: []
+    # -- Extra container securityContext fields for the Matter Server, merged next to the default seccomp profile.
+    # The image runs as root by default, so files it writes to the `/config` volume are root-owned (mode 0600)
+    # and Home Assistant (PUID/PGID) cannot read them, which breaks Home Assistant backups. Set
+    # `runAsUser`/`runAsGroup` to the same PUID/PGID as Home Assistant to avoid that.
+    securityContext: {}
+    # runAsUser: 1000
+    # runAsGroup: 1000
     # -- Environment variables for the Matter Server.
     env:
     - name: TZ
