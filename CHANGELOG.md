@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.3](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.3.2...home-assistant-v3.3.3) (2026-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update lscr.io/linuxserver/homeassistant docker tag to v2026.11.2 ([#54](https://github.com/Sironite/helm-home-assistant/issues/54)) ([182273f](https://github.com/Sironite/helm-home-assistant/commit/182273f966e3865ab46fcc9c6f8b586bd6f38507))
+
 ## [3.3.2](https://github.com/Sironite/helm-home-assistant/compare/home-assistant-v3.3.1...home-assistant-v3.3.2) (2026-11-07)
 
 
